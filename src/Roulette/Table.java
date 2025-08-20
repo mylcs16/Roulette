@@ -13,7 +13,10 @@ public class Table {
     private final String RED = "red";
     private final String BLACK = "black";
     private final String ZERO = "zero";
+    private final String STRAIGHT = "straight";
+    private final String UNSTRAIGHT = "unstraight";
 
+    private boolean won;
     private int number;
     private int bankaccount = 200;
     private int yourbet;
@@ -28,6 +31,8 @@ public class Table {
     JButton buttonBlack = new JButton("Black");
     JLabel result = new JLabel("Result: ");
     JLabel bank = new JLabel("Bank: " + bankaccount + "€");
+    JButton buttonStraight = new JButton("Straight number");
+    JButton buttonUnstraight = new JButton("Unstraight number");
 
 
 
@@ -37,18 +42,23 @@ public class Table {
         frame.setSize(500, 1000);
         frame.setLocation(100, 150);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setDefaultLookAndFeelDecorated(true);
+        //frame.setDefaultLookAndFeelDecorated(true);
 
         text.setBounds(150, 20, 200, 30);
         textField.setBounds(140, 50, 180, 30);
         buttonBlack.setBounds(140, 100, 180, 30);
         buttonRed.setBounds(140, 150, 180, 30);
-        result.setBounds(140, 200, 280, 30);
+        result.setBounds(140, 400, 280, 30);
         bank.setBounds(400, 20, 100, 30);
+        buttonStraight.setBounds(140, 200, 180, 30 );
+        buttonUnstraight.setBounds(140, 250, 180, 30);
+
 
         addListeners();
 
 
+        frame.add(buttonUnstraight);
+        frame.add(buttonStraight);
         frame.add(bank);
         frame.add(result);
         frame.add(buttonBlack);
@@ -76,13 +86,29 @@ public class Table {
                 avoidException();
             }
         });
+
+        buttonStraight.addActionListener((new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bet = STRAIGHT;
+                avoidException();
+            }
+        }));
+
+        buttonUnstraight.addActionListener((new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bet = UNSTRAIGHT;
+                avoidException();
+            }
+        }));
     }
 
     public void avoidException(){
         try {
             String textFromTextfield = textField.getText();
-            int textNumber = Integer.parseInt(textFromTextfield);
-            yourbet = textNumber;
+            int spendMoney = Integer.parseInt(textFromTextfield);
+            yourbet = spendMoney;
             run();
         } catch (Exception error) {
             text.setText("Bitte gebe eine Zahl ein!");
@@ -130,12 +156,23 @@ public class Table {
         rouletteTable.put(36, RED);
     }
 
-    public int run(){
+    public void run(){
         number = ThreadLocalRandom.current().nextInt(0, 36);
         String color = rouletteTable.get(number);
-        boolean won = bet == color;
+
+        switch(bet){
+            case STRAIGHT:
+                won = number % 2 == 0;
+                break;
+            case UNSTRAIGHT:
+                won = number % 2 != 0;
+                break;
+            case RED, BLACK:
+                won = bet.equals(color);
+                break;
+        }
+
         if (won){
-            yourbet = yourbet * 2;
             bankaccount = bankaccount + yourbet;
             result.setText("Result: " + number + "(" + color.toUpperCase() +")" + " ==> YOU WON " + yourbet + "€!" );
             bank.setText("Bank: " + bankaccount + "€");
@@ -145,6 +182,5 @@ public class Table {
             result.setText("Result: " + number + "(" + color.toUpperCase() +")" + " ==> YOU LOST EVERY CENT!");
         }
         System.out.println(yourbet);
-        return number;
     }
 }
