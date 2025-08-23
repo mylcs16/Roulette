@@ -18,7 +18,7 @@ public class Table {
 
     private boolean won;
     private int number;
-    private int bankaccount = 200;
+    private int bankaccount = 500;
     private int yourbet;
 
     private String bet = "";
@@ -31,9 +31,12 @@ public class Table {
     JButton buttonBlack = new JButton("Black");
     JLabel result = new JLabel("Result: ");
     JLabel bank = new JLabel("Bank: " + bankaccount + "€");
-    JButton buttonStraight = new JButton("Straight number");
-    JButton buttonUnstraight = new JButton("Unstraight number");
-
+    JButton buttonStraight = new JButton("even numbers");
+    JButton buttonUnstraight = new JButton("odd numbers");
+    JTextField fromField = new JTextField("");
+    JTextField toField = new JTextField("");
+    JLabel toLabel = new JLabel("To this:");
+    JLabel fromLabel = new JLabel("From this:");
 
 
     public void openUI(){
@@ -52,11 +55,19 @@ public class Table {
         bank.setBounds(400, 20, 100, 30);
         buttonStraight.setBounds(140, 200, 180, 30 );
         buttonUnstraight.setBounds(140, 250, 180, 30);
+        fromField.setBounds(140, 320, 70, 30);
+        toField.setBounds(250, 320, 70, 30);
+        toLabel.setBounds(250, 290, 70, 30);
+        fromLabel.setBounds(140, 290, 70, 30);
 
 
         addListeners();
 
 
+        frame.add(toLabel);
+        frame.add(fromLabel);
+        frame.add(toField);
+        frame.add(fromField);
         frame.add(buttonUnstraight);
         frame.add(buttonStraight);
         frame.add(bank);
@@ -113,6 +124,15 @@ public class Table {
         } catch (Exception error) {
             text.setText("Bitte gebe eine Zahl ein!");
         }
+    }
+
+    public void gambleFromTo(){
+        String textFromFromField = fromField.getText();
+        int fromNumber = Integer.parseInt(textFromFromField);
+        String textFromToField = toField.getText();
+        int toNumber = Integer.parseInt(textFromToField);
+        bet = bet + fromNumber + " to " + toNumber;
+        System.out.println(bet);
     }
 
     public Table(){
@@ -181,6 +201,7 @@ public class Table {
             bank.setText("Bank: " + bankaccount + "€");
             result.setText("Result: " + number + "(" + color.toUpperCase() +")" + " ==> YOU LOST EVERY CENT!");
         }
-        System.out.println(yourbet);
+
+
     }
 }
